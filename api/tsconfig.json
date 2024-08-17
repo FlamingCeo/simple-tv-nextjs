@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "incremental": true,
+    "experimentalDecorators": true,
+    "target": "es2016",
+    "module": "NodeNext",                          
+    "moduleResolution": "NodeNext", 
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "strict": true,
+    "rootDir": "src",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "skipLibCheck": true,
+    "outDir": "dist/",
+    "paths": {
+      "@lib/*": ["src/lib/*"],
+      "@configs/*": ["src/lib/config/*"],
+      "@models/*": ["src/models/*"],
+      "@modules/*": ["src/modules/*"],
+      "@routers/*": ["src/router/*"],
+      "@utils/*": ["src/utils/*"],
+    }
+  },
+  "include": ["src/**/*"],
+  "plugins": [
+    {
+      "transform": "tsc-alias"
+    }
+  ],
+}

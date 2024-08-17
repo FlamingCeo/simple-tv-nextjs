@@ -1,0 +1,254 @@
+"use client";
+import {
+  UserGroupIcon,
+  HomeIcon,
+  DocumentDuplicateIcon,
+} from "@heroicons/react/24/outline";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import clsx from "clsx";
+import { fetchNavItem } from "@/app/lib/data";
+
+// Sample data structure
+const sample = [
+  {
+    id: "1",
+    name: "Breaking Bad",
+    createdAt: "2024-08-04T22:25:18.017Z",
+    updatedAt: "2024-08-04T22:25:18.017Z",
+    deletedAt: null,
+    seasons: [
+      {
+        id: "1",
+        series_id: "1",
+        name: "Season 1",
+        no: 1,
+        createdAt: "2024-08-04T22:25:18.027Z",
+        updatedAt: "2024-08-04T22:25:18.027Z",
+        deletedAt: null,
+        episodes: [
+          {
+            id: "1",
+            series_id: "1",
+            season_id: "1",
+            name: "Pilot",
+            no: 1,
+            createdAt: "2024-08-04T22:25:18.034Z",
+            updatedAt: "2024-08-04T22:25:18.034Z",
+            deletedAt: null,
+          },
+          {
+            id: "2",
+            series_id: "1",
+            season_id: "1",
+            name: "Cat's in the Bag...",
+            no: 2,
+            createdAt: "2024-08-04T22:25:18.034Z",
+            updatedAt: "2024-08-04T22:25:18.034Z",
+            deletedAt: null,
+          },
+        ],
+      },
+      {
+        id: "2",
+        series_id: "1",
+        name: "Season 2",
+        no: 2,
+        createdAt: "2024-08-04T22:25:18.027Z",
+        updatedAt: "2024-08-04T22:25:18.027Z",
+        deletedAt: null,
+        episodes: [],
+      },
+    ],
+  },
+  {
+    id: "2",
+    name: "Game of Thrones",
+    createdAt: "2024-08-04T22:25:18.017Z",
+    updatedAt: "2024-08-04T22:25:18.017Z",
+    deletedAt: null,
+    seasons: [
+      {
+        id: "3",
+        series_id: "2",
+        name: "Season 1",
+        no: 1,
+        createdAt: "2024-08-04T22:25:18.027Z",
+        updatedAt: "2024-08-04T22:25:18.027Z",
+        deletedAt: null,
+        episodes: [
+          {
+            id: "3",
+            series_id: "2",
+            season_id: "3",
+            name: "Winter Is Coming",
+            no: 1,
+            createdAt: "2024-08-04T22:25:18.034Z",
+            updatedAt: "2024-08-04T22:25:18.034Z",
+            deletedAt: null,
+          },
+          {
+            id: "4",
+            series_id: "2",
+            season_id: "3",
+            name: "The Kingsroad",
+            no: 2,
+            createdAt: "2024-08-04T22:25:18.034Z",
+            updatedAt: "2024-08-04T22:25:18.034Z",
+            deletedAt: null,
+          },
+        ],
+      },
+      {
+        id: "4",
+        series_id: "2",
+        name: "Season 2",
+        no: 2,
+        createdAt: "2024-08-04T22:25:18.027Z",
+        updatedAt: "2024-08-04T22:25:18.027Z",
+        deletedAt: null,
+        episodes: [],
+      },
+    ],
+  },
+  {
+    id: "3",
+    name: "Stranger Things",
+    createdAt: "2024-08-04T22:25:18.017Z",
+    updatedAt: "2024-08-04T22:25:18.017Z",
+    deletedAt: null,
+    seasons: [
+      {
+        id: "5",
+        series_id: "3",
+        name: "Season 1",
+        no: 1,
+        createdAt: "2024-08-04T22:25:18.027Z",
+        updatedAt: "2024-08-04T22:25:18.027Z",
+        deletedAt: null,
+        episodes: [
+          {
+            id: "5",
+            series_id: "3",
+            season_id: "5",
+            name: "Chapter One: The Vanishing of Will Byers",
+            no: 1,
+            createdAt: "2024-08-04T22:25:18.034Z",
+            updatedAt: "2024-08-04T22:25:18.034Z",
+            deletedAt: null,
+          },
+          {
+            id: "6",
+            series_id: "3",
+            season_id: "5",
+            name: "Chapter Two: The Weirdo on Maple Street",
+            no: 2,
+            createdAt: "2024-08-04T22:25:18.034Z",
+            updatedAt: "2024-08-04T22:25:18.034Z",
+            deletedAt: null,
+          },
+        ],
+      },
+      {
+        id: "6",
+        series_id: "3",
+        name: "Season 2",
+        no: 2,
+        createdAt: "2024-08-04T22:25:18.027Z",
+        updatedAt: "2024-08-04T22:25:18.027Z",
+        deletedAt: null,
+        episodes: [],
+      },
+    ],
+  },
+];
+
+// Type definitions for the navigation links and submenu
+interface Episode {
+  id: string;
+  name: string;
+}
+
+interface Season {
+  id: string;
+  name: string;
+  episodes: Episode[];
+}
+
+interface Series {
+  id: string;
+  name: string;
+  seasons: Season[];
+}
+
+// Interface for submenu
+interface Submenu {
+  name: string;
+  href: string;
+  icon?: React.ComponentType<any>;
+  submenu?: Submenu[];
+}
+
+// Map the sample data to a suitable structure for navigation links
+const links = sample.map((series: Series) => ({
+  name: series.name,
+  href: `/dashboard/series/${series.id}`,
+  icon: DocumentDuplicateIcon,
+  submenu: series.seasons.map((season: Season) => ({
+    name: season.name,
+    href: `/dashboard/series/${series.id}/season/${season.id}`,
+    icon: DocumentDuplicateIcon,
+    submenu: season.episodes.map((episode: Episode) => ({
+      name: episode.name,
+      href: `/dashboard/series/${series.id}/season/${season.id}/episode/${episode.id}`,
+    })),
+  })),
+}));
+
+interface NavItemProps {
+  link: Submenu;
+  pathname: string;
+}
+
+const NavItem: React.FC<NavItemProps> = async ({ link, pathname }) => {
+  const invoices = await fetchNavItem();
+  const LinkIcon = link.icon;
+  const isActive = pathname.startsWith(link.href);
+
+  return (
+    <div key={link.name}>
+      <Link
+        href={link.href}
+        className={clsx(
+          "flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3",
+          {
+            "bg-sky-100 text-blue-600": pathname === link.href,
+          }
+        )}
+      >
+        {LinkIcon && <LinkIcon className="w-6" />}
+        <p className="hidden md:block">{link.name}</p>
+      </Link>
+      {link.submenu && isActive && (
+        <div className="ml-6 mt-1 space-y-1">
+          {link.submenu.map((sublink) => (
+            <NavItem key={sublink.name} link={sublink} pathname={pathname} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const NavLinks: React.FC = () => {
+  const pathname = usePathname();
+  return (
+    <>
+      {links.map((link) => (
+        <NavItem key={link.name} link={link} pathname={pathname} />
+      ))}
+    </>
+  );
+};
+
+export default NavLinks;

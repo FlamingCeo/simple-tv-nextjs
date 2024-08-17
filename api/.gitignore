@@ -1,0 +1,11 @@
+#directories
+node_modules/
+dist/
+
+# Files
+pnpm-lock.yaml
+npm-lock.json
+yarn-lock.json
+tsconfig.tsbuildinfo
+.env
+package-lock.json
